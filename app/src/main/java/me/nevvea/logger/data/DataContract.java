@@ -37,11 +37,11 @@ public class DataContract {
         public static final String COLUMN_LOG_TIME = "log_time";
         public static final String COLUMN_LOG_MSG = "log_msg";
 
-        public static Uri buildHistoryUri(long id) {
+        public static Uri buildLogUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildHistoryWithRestID(String logid) {
+        public static Uri buildLogWithID(String logid) {
             return CONTENT_URI.buildUpon().appendPath(logid).build();
         }
     }
