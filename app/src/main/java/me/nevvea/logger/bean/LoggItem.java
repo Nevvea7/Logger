@@ -1,4 +1,4 @@
-package me.nevvea.logger;
+package me.nevvea.logger.bean;
 
 import java.sql.Time;
 
@@ -7,7 +7,7 @@ import java.sql.Time;
  *
  * Created by Anna on 6/14/16.
  */
-public class Logg {
+public class LoggItem {
     private int mDay;
     private int mMonth;
     private int mYear;

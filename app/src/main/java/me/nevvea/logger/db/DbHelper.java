@@ -1,9 +1,9 @@
-package me.nevvea.logger.data;
+package me.nevvea.logger.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import me.nevvea.logger.data.DataContract.LogEntry;
+import me.nevvea.logger.db.DataContract.LogEntry;
 
 /**
  * Created by Anna on 6/13/16.
@@ -12,7 +12,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
 
-    static final String DATABASE_NAME = "restaurants.db";
+    static final String DATABASE_NAME = "logger.db";
 
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

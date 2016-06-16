@@ -1,4 +1,4 @@
-package me.nevvea.logger.data;
+package me.nevvea.logger.db;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -13,6 +13,20 @@ import android.support.annotation.Nullable;
  * Created by Anna on 6/13/16.
  */
 public class DataProvider extends ContentProvider {
+
+    public static final String CONTENT_AUTHORITY = "app.nevvea.nomnom";
+
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+
+    public static final String PATH_ALL_LOG = "all_log";
+    public static final String PATH_LOG = "log";
+
+    public static final Uri ALL_LOG_URI =
+            BASE_CONTENT_URI
+                    .buildUpon()
+                    .appendPath(PATH_ALL_LOG)
+                    .build();
+
 
     // The URI Matcher used by this content provider.
     private static final UriMatcher sUriMatcher = buildUriMatcher();

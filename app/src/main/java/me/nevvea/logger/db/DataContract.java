@@ -1,4 +1,4 @@
-package me.nevvea.logger.data;
+package me.nevvea.logger.db;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -14,8 +14,14 @@ public class DataContract {
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
+    public static final String PATH_ALL_LOG = "all_log";
     public static final String PATH_LOG = "log";
 
+    public static final Uri ALL_LOG_URI =
+            BASE_CONTENT_URI
+                    .buildUpon()
+                    .appendPath(PATH_ALL_LOG)
+                    .build();
 
     public static final class LogEntry implements BaseColumns {
 
