@@ -36,7 +36,7 @@ public class LoggItem {
         loggItem.mMonth = cursor.getInt(cursor.getColumnIndex(LoggDataHelper.LoggDBInfo.COLUMN_LOG_MONTH));
         loggItem.mYear = cursor.getInt(cursor.getColumnIndex(LoggDataHelper.LoggDBInfo.COLUMN_LOG_YEAR));
         int secs = cursor.getInt(cursor.getColumnIndex(LoggDataHelper.LoggDBInfo.COLUMN_LOG_TIME));
-        
+        loggItem.mTime = new Time(secs);
         loggItem.mMsg = cursor.getString(cursor.getColumnIndex(LoggDataHelper.LoggDBInfo.COLUMN_LOG_MSG));
         return loggItem;
     }

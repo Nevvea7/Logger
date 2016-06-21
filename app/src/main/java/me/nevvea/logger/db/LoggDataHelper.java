@@ -52,7 +52,13 @@ public class LoggDataHelper extends BaseDataHelper implements DBInterface<LoggIt
 
     @Override
     public CursorLoader getCursorLoader() {
-        return null;
+        return new CursorLoader(
+                getContext(),
+                getContentUri(),
+                null,
+                null,
+                null,
+                LoggDBInfo.COLUMN_LOG_ID + " ASC");
     }
 
 

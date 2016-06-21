@@ -1,38 +1,5 @@
 package me.nevvea.logger;
 
-/*
- * Copyright (C) 2013 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/*
- * Copyright (C) 2014 flzyup@ligux.com
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
-
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -44,19 +11,25 @@ import android.widget.FilterQueryProvider;
 import android.widget.Filterable;
 
 /**
- * url --> https://gist.github.com/skyfishjy/443b7448f59be978bc59
- * Version 1.0
- * Date: 2014-07-07 19:53
- * Author: flzyup@ligux.com
- * Copyright © 2009-2014 LiGux.com.
+ * Author:    ZhuWenWu
+ * Version    V1.0
+ * Date:      2015/2/25  16:39.
+ * Description:
+ * Modification  History:
+ * Date         	Author        		Version        	Description
+ * -----------------------------------------------------------------------------------
+ * 2015/2/25        ZhuWenWu            1.0                    1.0
+ * Why & What is modified:
  */
 public abstract class BaseAbstractRecycleCursorAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> implements Filterable,
         CursorFilter.CursorFilterClient {
+
     /**
      * Call when bind view with the cursor
      *
-     * @param holder
-     * @param cursor
+     * @param holder RecyclerView.ViewHolder
+     * @param cursor The cursor from which to get the data. The cursor is already
+     *               moved to the correct position.
      */
     public abstract void onBindViewHolder(VH holder, Cursor cursor);
 
@@ -65,23 +38,21 @@ public abstract class BaseAbstractRecycleCursorAdapter<VH extends RecyclerView.V
      * {@hide}
      */
     protected boolean mDataValid;
-
     /**
-     * The current cursor
+     * This field should be made private, so it is hidden from the SDK.
+     * {@hide}
      */
     protected Cursor mCursor;
-
     /**
      * This field should be made private, so it is hidden from the SDK.
      * {@hide}
      */
     protected Context mContext;
-
     /**
-     * The row id column
+     * This field should be made private, so it is hidden from the SDK.
+     * {@hide}
      */
     protected int mRowIDColumn;
-
     /**
      * This field should be made private, so it is hidden from the SDK.
      * {@hide}
@@ -92,13 +63,11 @@ public abstract class BaseAbstractRecycleCursorAdapter<VH extends RecyclerView.V
      * {@hide}
      */
     protected DataSetObserver mDataSetObserver;
-
     /**
      * This field should be made private, so it is hidden from the SDK.
      * {@hide}
      */
     protected CursorFilter mCursorFilter;
-
     /**
      * This field should be made private, so it is hidden from the SDK.
      * {@hide}
@@ -114,6 +83,20 @@ public abstract class BaseAbstractRecycleCursorAdapter<VH extends RecyclerView.V
      * {@link android.content.CursorLoader}.
      */
     public static final int FLAG_REGISTER_CONTENT_OBSERVER = 0x02;
+
+    /**
+     * Constructor that flags always FLAG_REGISTER_CONTENT_OBSERVER.
+     *
+     * @param c       The cursor from which to get the data.
+     * @param context The context
+     * This option is discouraged, as it results in Cursor queries
+     * being performed on the application's UI thread and thus can cause poor
+     * responsiveness or even Application Not Responding errors.  As an alternative,
+     * use {@link android.app.LoaderManager} with a {@link android.content.CursorLoader}.
+     */
+    public BaseAbstractRecycleCursorAdapter(Context context, Cursor c) {
+        this(context, c, FLAG_REGISTER_CONTENT_OBSERVER);
+    }
 
     /**
      * Recommended constructor.
@@ -145,7 +128,8 @@ public abstract class BaseAbstractRecycleCursorAdapter<VH extends RecyclerView.V
             if (mChangeObserver != null) c.registerContentObserver(mChangeObserver);
             if (mDataSetObserver != null) c.registerDataSetObserver(mDataSetObserver);
         }
-        setHasStableIds(true);
+
+        setHasStableIds(true);//这个地方要注意一下，需要将表关联ID设置为true
     }
 
     /**
@@ -153,7 +137,6 @@ public abstract class BaseAbstractRecycleCursorAdapter<VH extends RecyclerView.V
      *
      * @return the cursor.
      */
-    @Override
     public Cursor getCursor() {
         return mCursor;
     }
@@ -170,9 +153,17 @@ public abstract class BaseAbstractRecycleCursorAdapter<VH extends RecyclerView.V
         }
     }
 
+    public Object getItem(int position) {
+        if (mDataValid && mCursor != null) {
+            mCursor.moveToPosition(position);
+            return mCursor;
+        } else {
+            return null;
+        }
+    }
+
     /**
      * @param position Adapter position to query
-     * @return
      * @see android.support.v7.widget.RecyclerView.Adapter#getItemId(int)
      */
     @Override
@@ -214,7 +205,7 @@ public abstract class BaseAbstractRecycleCursorAdapter<VH extends RecyclerView.V
 
     /**
      * Swap in a new Cursor, returning the old Cursor.  Unlike
-     * {@link #changeCursor(android.database.Cursor)}, the returned old Cursor is <em>not</em>
+     * {@link #changeCursor(Cursor)}, the returned old Cursor is <em>not</em>
      * closed.
      *
      * @param newCursor The new cursor to be used.
@@ -243,6 +234,7 @@ public abstract class BaseAbstractRecycleCursorAdapter<VH extends RecyclerView.V
             mRowIDColumn = -1;
             mDataValid = false;
             // notify the observers about the lack of a data set
+            //There is no notifyDataSetInvalidated() method in RecyclerView.Adapter
             notifyDataSetChanged();
         }
         return oldCursor;
@@ -269,7 +261,7 @@ public abstract class BaseAbstractRecycleCursorAdapter<VH extends RecyclerView.V
      * {@link android.widget.FilterQueryProvider}.
      * If no provider is specified, the current cursor is not filtered and returned.
      * <p/>
-     * After this method returns the resulting cursor is passed to {@link #changeCursor(android.database.Cursor)}
+     * After this method returns the resulting cursor is passed to {@link #changeCursor(Cursor)}
      * and the previous cursor is closed.
      * <p/>
      * This method is always executed on a background thread, not on the
@@ -333,7 +325,9 @@ public abstract class BaseAbstractRecycleCursorAdapter<VH extends RecyclerView.V
      *
      * @see android.database.ContentObserver#onChange(boolean)
      */
-    protected abstract void onContentChanged();
+    protected void onContentChanged() {
+
+    }
 
     private class ChangeObserver extends ContentObserver {
         public ChangeObserver() {
@@ -361,6 +355,7 @@ public abstract class BaseAbstractRecycleCursorAdapter<VH extends RecyclerView.V
         @Override
         public void onInvalidated() {
             mDataValid = false;
+            //There is no notifyDataSetInvalidated() method in RecyclerView.Adapter
             notifyDataSetChanged();
         }
     }
