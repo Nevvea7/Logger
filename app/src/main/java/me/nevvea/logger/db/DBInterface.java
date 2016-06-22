@@ -39,6 +39,8 @@ public interface DBInterface<T> {
      */
     public void bulkInsert(List<T> listData);
 
+    public void insert(T data);
+
     public ContentValues getContentValues(T data);
 
     public CursorLoader getCursorLoader();

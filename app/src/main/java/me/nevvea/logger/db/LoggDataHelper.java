@@ -40,13 +40,26 @@ public class LoggDataHelper extends BaseDataHelper implements DBInterface<LoggIt
         return 0;
     }
 
+
     @Override
     public void bulkInsert(List<LoggItem> listData) {
 
     }
 
     @Override
+    public void insert(LoggItem data) {
+        ContentValues value = getContentValues(data);
+        insert(value);
+    }
+
+    @Override
     public ContentValues getContentValues(LoggItem data) {
+        ContentValues values = new ContentValues();
+        values.put(LoggDBInfo.COLUMN_LOG_DAY, data.mDay);
+        values.put(LoggDBInfo.COLUMN_LOG_MONTH, data.mMonth);
+        values.put(LoggDBInfo.COLUMN_LOG_YEAR, data.mYear);
+        values.put(LoggDBInfo.COLUMN_LOG_TIME, data.mTime.getTime());
+        values.put(LoggDBInfo.COLUMN_LOG_MSG, data.mMsg);
         return null;
     }
 

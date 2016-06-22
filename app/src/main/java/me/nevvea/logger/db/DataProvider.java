@@ -1,9 +1,11 @@
 package me.nevvea.logger.db;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -97,23 +99,22 @@ public class DataProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final int match = sUriMatcher.match(uri);
-        Uri returnUri;
-        switch (match) {
-            case LOG: {
-                long _id = db.insert(DataContract.LogEntry.TABLE_NAME, null, values);
-                if ( _id > 0 )
-                    returnUri = DataContract.LogEntry.buildLogUri(_id);
-                else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                break;
-            }
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        long rowId = 0;
+        db.beginTransaction();
+        try {
+            rowId = db.insert(matchTable(uri), null, values);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
         }
-        getContext().getContentResolver().notifyChange(uri, null);
-
-        return returnUri;
+        if (rowId > 0) {
+            Uri returnUri = ContentUris.withAppendedId(uri, rowId);
+            getContext().getContentResolver().notifyChange(uri, null);
+            return returnUri;
+        }
+        throw new SQLException("Failed to insert row into " + uri);
     }
 
     @Override
@@ -125,4 +126,17 @@ public class DataProvider extends ContentProvider {
     public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;
     }
+
+    private String matchTable(Uri uri) {
+        String table;
+        switch (sUriMatcher.match(uri)) {
+            case LOG://Demo列表
+                table = LoggDataHelper.LoggDBInfo.TABLE_NAME;
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown Uri" + uri);
+        }
+        return table;
+    }
+
 }
