@@ -7,16 +7,18 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * Created by Anna on 6/13/16.
  */
 public class DataProvider extends ContentProvider {
 
-    public static final String CONTENT_AUTHORITY = "app.nevvea.nomnom";
+    public static final String CONTENT_AUTHORITY = "me.nevvea.logger";
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
@@ -36,14 +38,16 @@ public class DataProvider extends ContentProvider {
 
     static final int LOG = 100;
     static final int LOG_WITH_ID = 101;
+    static final int ALL_LOG = 200;
 
     static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        final String authority = DataContract.CONTENT_AUTHORITY;
+        final String authority = CONTENT_AUTHORITY;
 
         // For each type of URI you want to add, create a corresponding code.
-        matcher.addURI(authority, DataContract.PATH_LOG, LOG);
-        matcher.addURI(authority, DataContract.PATH_LOG + "/*", LOG_WITH_ID);
+        matcher.addURI(authority, PATH_LOG, LOG);
+        matcher.addURI(authority, PATH_LOG + "/*", LOG_WITH_ID);
+        matcher.addURI(authority, PATH_ALL_LOG, ALL_LOG);
         return matcher;
     }
 
@@ -57,26 +61,21 @@ public class DataProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor retCursor;
-        switch (sUriMatcher.match(uri)) {
-            case LOG: {
-                retCursor = mOpenHelper
-                        .getReadableDatabase()
-                        .query(
-                                DataContract.LogEntry.TABLE_NAME,
-                                projection,
-                                selection,
-                                selectionArgs,
-                                null,
-                                null,
-                                sortOrder
-                        );
-                break;
-            }
+        SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+        queryBuilder.setTables(matchTable(uri));
 
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
 
-        }
+        retCursor = queryBuilder.query(
+                db,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return retCursor;
     }
@@ -89,7 +88,11 @@ public class DataProvider extends ContentProvider {
 
         switch (match) {
             case LOG:
-                return DataContract.LogEntry.CONTENT_ITEM_TYPE;
+                return LoggDataHelper.LoggDBInfo.CONTENT_ITEM_TYPE;
+            case LOG_WITH_ID:
+                return LoggDataHelper.LoggDBInfo.CONTENT_ITEM_TYPE;
+            case ALL_LOG:
+                return LoggDataHelper.LoggDBInfo.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -131,6 +134,9 @@ public class DataProvider extends ContentProvider {
         String table;
         switch (sUriMatcher.match(uri)) {
             case LOG://Demo列表
+                table = LoggDataHelper.LoggDBInfo.TABLE_NAME;
+                break;
+            case ALL_LOG:
                 table = LoggDataHelper.LoggDBInfo.TABLE_NAME;
                 break;
             default:

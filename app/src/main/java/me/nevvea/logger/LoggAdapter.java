@@ -26,8 +26,8 @@ public class LoggAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerView.V
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, Cursor cursor) {
         LoggItem loggItem = LoggItem.fromCursor(cursor);
-        ((FullLoggViewHolder) holder).mTVLoggMonth.setText(loggItem.mMonth);
-        ((FullLoggViewHolder) holder).mTVLoggDay.setText(loggItem.mDay);
+        ((FullLoggViewHolder) holder).mTVLoggMonth.setText(loggItem.mMonth + "");
+        ((FullLoggViewHolder) holder).mTVLoggDay.setText(loggItem.mDay + "");
         ((FullLoggViewHolder) holder).mTVLoggSum.setText(loggItem.mMsg);
 
     }

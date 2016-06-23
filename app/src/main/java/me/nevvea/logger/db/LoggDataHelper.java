@@ -1,5 +1,6 @@
 package me.nevvea.logger.db;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
@@ -58,9 +59,12 @@ public class LoggDataHelper extends BaseDataHelper implements DBInterface<LoggIt
         values.put(LoggDBInfo.COLUMN_LOG_DAY, data.mDay);
         values.put(LoggDBInfo.COLUMN_LOG_MONTH, data.mMonth);
         values.put(LoggDBInfo.COLUMN_LOG_YEAR, data.mYear);
-        values.put(LoggDBInfo.COLUMN_LOG_TIME, data.mTime.getTime());
+        values.put(LoggDBInfo.COLUMN_LOG_HOUR, data.mHour);
+        values.put(LoggDBInfo.COLUMN_LOG_MINUTE, data.mMinute);
+        values.put(LoggDBInfo.COLUMN_LOG_SECOND, data.mSecond);
+        values.put(LoggDBInfo.COLUMN_LOG_TIME, data.mTime);
         values.put(LoggDBInfo.COLUMN_LOG_MSG, data.mMsg);
-        return null;
+        return values;
     }
 
     @Override
@@ -86,17 +90,29 @@ public class LoggDataHelper extends BaseDataHelper implements DBInterface<LoggIt
         public static final String COLUMN_LOG_DAY = "log_day";
         public static final String COLUMN_LOG_MONTH = "log_month";
         public static final String COLUMN_LOG_YEAR = "log_year";
+        public static final String COLUMN_LOG_HOUR = "log_hour";
+        public static final String COLUMN_LOG_MINUTE = "log_minute";
+        public static final String COLUMN_LOG_SECOND = "log_second";
         public static final String COLUMN_LOG_TIME = "log_time";
         public static final String COLUMN_LOG_MSG = "log_msg";
 
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + DataProvider.CONTENT_AUTHORITY + "/" + DataProvider.PATH_ALL_LOG;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + DataProvider.CONTENT_AUTHORITY + "/" + DataProvider.PATH_ALL_LOG;
+
+
         public static final SQLiteTable TABLE =
                 new SQLiteTable(TABLE_NAME)
-                .addColumn(COLUMN_LOG_ID, Column.DataType.INTEGER)
-                .addColumn(COLUMN_LOG_DAY, Column.DataType.INTEGER)
-                .addColumn(COLUMN_LOG_MONTH, Column.DataType.INTEGER)
-                .addColumn(COLUMN_LOG_YEAR, Column.DataType.INTEGER)
-                .addColumn(COLUMN_LOG_TIME, Column.DataType.INTEGER)
-                .addColumn(COLUMN_LOG_MSG, Column.DataType.TEXT);
+                        .addColumn(COLUMN_LOG_ID, Column.DataType.INTEGER)
+                        .addColumn(COLUMN_LOG_DAY, Column.DataType.INTEGER)
+                        .addColumn(COLUMN_LOG_MONTH, Column.DataType.INTEGER)
+                        .addColumn(COLUMN_LOG_YEAR, Column.DataType.INTEGER)
+                        .addColumn(COLUMN_LOG_HOUR, Column.DataType.INTEGER)
+                        .addColumn(COLUMN_LOG_MINUTE, Column.DataType.INTEGER)
+                        .addColumn(COLUMN_LOG_SECOND, Column.DataType.INTEGER)
+                        .addColumn(COLUMN_LOG_TIME, Column.DataType.INTEGER)
+                        .addColumn(COLUMN_LOG_MSG, Column.DataType.TEXT);
 
     }
 }

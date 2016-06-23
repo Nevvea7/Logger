@@ -1,21 +1,30 @@
 package me.nevvea.logger;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import me.nevvea.logger.bean.LoggItem;
+import me.nevvea.logger.db.LoggDataHelper;
 
 public class MainActivity extends AppCompatActivity {
 
     Unbinder mUnbinder;
+    private LoggDataHelper mLoggDataHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,13 +32,15 @@ public class MainActivity extends AppCompatActivity {
         mUnbinder = ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mLoggDataHelper = new LoggDataHelper(this);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                DialogBuilder.buildSingleLoggDialog(MainActivity.this).show();
             }
         });
     }

@@ -13,7 +13,7 @@
         <provider
             android:name=".db.DataProvider"
             android:authorities="me.nevvea.logger"
-            android:exported="false">
+            android:exported="true">
             <grant-uri-permission android:pathPattern=".*" />
         </provider>
 

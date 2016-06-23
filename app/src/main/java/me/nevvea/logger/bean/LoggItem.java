@@ -3,6 +3,7 @@ package me.nevvea.logger.bean;
 import android.database.Cursor;
 
 import java.sql.Time;
+import java.util.Calendar;
 
 import me.nevvea.logger.db.LoggDataHelper;
 
@@ -15,14 +16,27 @@ public class LoggItem {
     public int mDay;
     public int mMonth;
     public int mYear;
-    public Time mTime;
+    public int mHour;
+    public int mMinute;
+    public int mSecond;
+    public long mTime;
     public String mMsg;
 
     public LoggItem() {
 
     }
-
-    public LoggItem(int day, int month, int year, Time time, String msg) {
+    public LoggItem(String msg) {
+        Calendar c = Calendar.getInstance();
+        this.mYear = c.get(Calendar.YEAR);
+        this.mMonth = c.get(Calendar.MONTH);
+        this.mDay = c.get(Calendar.DAY_OF_MONTH);
+        this.mHour = c.get(Calendar.HOUR_OF_DAY);
+        this.mMinute = c.get(Calendar.MINUTE);
+        this.mSecond = c.get(Calendar.SECOND);
+        this.mTime = c.getTimeInMillis();
+        this.mMsg = msg;
+    }
+    public LoggItem(int day, int month, int year, long time, String msg) {
         this.mDay = day;
         this.mMonth = month;
         this.mYear = year;
@@ -35,8 +49,7 @@ public class LoggItem {
         loggItem.mDay = cursor.getInt(cursor.getColumnIndex(LoggDataHelper.LoggDBInfo.COLUMN_LOG_DAY));
         loggItem.mMonth = cursor.getInt(cursor.getColumnIndex(LoggDataHelper.LoggDBInfo.COLUMN_LOG_MONTH));
         loggItem.mYear = cursor.getInt(cursor.getColumnIndex(LoggDataHelper.LoggDBInfo.COLUMN_LOG_YEAR));
-        long secs = cursor.getLong(cursor.getColumnIndex(LoggDataHelper.LoggDBInfo.COLUMN_LOG_TIME));
-        loggItem.mTime = new Time(secs);
+        loggItem.mTime = cursor.getLong(cursor.getColumnIndex(LoggDataHelper.LoggDBInfo.COLUMN_LOG_TIME));
         loggItem.mMsg = cursor.getString(cursor.getColumnIndex(LoggDataHelper.LoggDBInfo.COLUMN_LOG_MSG));
         return loggItem;
     }
