@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.Unbinder;
+
 import me.nevvea.logger.bean.LoggItem;
 
 /**
@@ -26,7 +26,7 @@ public class LoggAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerView.V
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, Cursor cursor) {
         LoggItem loggItem = LoggItem.fromCursor(cursor);
-        ((FullLoggViewHolder) holder).mTVLoggMonth.setText(loggItem.mMonth + "");
+        ((FullLoggViewHolder) holder).mTVLoggMonth.setText(getMonth(loggItem.mMonth));
         ((FullLoggViewHolder) holder).mTVLoggDay.setText(loggItem.mDay + "");
         ((FullLoggViewHolder) holder).mTVLoggSum.setText(loggItem.mMsg);
 
@@ -51,6 +51,37 @@ public class LoggAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerView.V
             super(itemView);
             ButterKnife.bind(this, itemView);
             mAdapter = adapter;
+        }
+    }
+
+    private String getMonth(int month) {
+        switch (month) {
+            case 1:
+                return "Jan";
+            case 2:
+                return "Feb";
+            case 3:
+                return "Mar";
+            case 4:
+                return "Apr";
+            case 5:
+                return "May";
+            case 6:
+                return "Jun";
+            case 7:
+                return "Jul";
+            case 8:
+                return "Aug";
+            case 9:
+                return "Sep";
+            case 10:
+                return "Oct";
+            case 11:
+                return "Nov";
+            case 12:
+                return "Dec";
+            default:
+                return "???";
         }
     }
 }

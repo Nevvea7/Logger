@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import me.nevvea.logger.db.LoggDataHelper;
+import me.nevvea.logger.db.datahelper.FPLoggDataHelper;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -26,7 +26,7 @@ public class MainActivityFragment extends Fragment
     Unbinder mUnbinder;
     @BindView(R.id.recycler_view_main_frag)
     RecyclerView mRecyclerView;
-    private LoggDataHelper mLoggDataHelper;
+    private FPLoggDataHelper mFPLoggDataHelper;
     private LoggAdapter mLoggAdapter;
 
     public MainActivityFragment() {
@@ -36,7 +36,7 @@ public class MainActivityFragment extends Fragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLoggDataHelper = new LoggDataHelper(getActivity());
+        mFPLoggDataHelper = new FPLoggDataHelper(getActivity());
     }
 
     @Override
@@ -69,7 +69,7 @@ public class MainActivityFragment extends Fragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return mLoggDataHelper.getCursorLoader();
+        return mFPLoggDataHelper.getCursorLoader();
     }
 
     @Override

@@ -2,10 +2,9 @@ package me.nevvea.logger.bean;
 
 import android.database.Cursor;
 
-import java.sql.Time;
 import java.util.Calendar;
 
-import me.nevvea.logger.db.LoggDataHelper;
+import me.nevvea.logger.db.LoggDBInfo;
 
 /**
  * An object that holds a single log message
@@ -28,7 +27,7 @@ public class LoggItem {
     public LoggItem(String msg) {
         Calendar c = Calendar.getInstance();
         this.mYear = c.get(Calendar.YEAR);
-        this.mMonth = c.get(Calendar.MONTH);
+        this.mMonth = c.get(Calendar.MONTH) + 1;
         this.mDay = c.get(Calendar.DAY_OF_MONTH);
         this.mHour = c.get(Calendar.HOUR_OF_DAY);
         this.mMinute = c.get(Calendar.MINUTE);
@@ -46,11 +45,14 @@ public class LoggItem {
 
     public static LoggItem fromCursor(Cursor cursor) {
         LoggItem loggItem = new LoggItem();
-        loggItem.mDay = cursor.getInt(cursor.getColumnIndex(LoggDataHelper.LoggDBInfo.COLUMN_LOG_DAY));
-        loggItem.mMonth = cursor.getInt(cursor.getColumnIndex(LoggDataHelper.LoggDBInfo.COLUMN_LOG_MONTH));
-        loggItem.mYear = cursor.getInt(cursor.getColumnIndex(LoggDataHelper.LoggDBInfo.COLUMN_LOG_YEAR));
-        loggItem.mTime = cursor.getLong(cursor.getColumnIndex(LoggDataHelper.LoggDBInfo.COLUMN_LOG_TIME));
-        loggItem.mMsg = cursor.getString(cursor.getColumnIndex(LoggDataHelper.LoggDBInfo.COLUMN_LOG_MSG));
+        loggItem.mDay = cursor.getInt(cursor.getColumnIndex(LoggDBInfo.COLUMN_LOG_DAY));
+        loggItem.mMonth = cursor.getInt(cursor.getColumnIndex(LoggDBInfo.COLUMN_LOG_MONTH));
+        loggItem.mYear = cursor.getInt(cursor.getColumnIndex(LoggDBInfo.COLUMN_LOG_YEAR));
+        loggItem.mHour = cursor.getInt(cursor.getColumnIndex(LoggDBInfo.COLUMN_LOG_HOUR));
+        loggItem.mMinute = cursor.getInt(cursor.getColumnIndex(LoggDBInfo.COLUMN_LOG_MINUTE));
+        loggItem.mSecond = cursor.getInt(cursor.getColumnIndex(LoggDBInfo.COLUMN_LOG_SECOND));
+        loggItem.mTime = cursor.getLong(cursor.getColumnIndex(LoggDBInfo.COLUMN_LOG_TIME));
+        loggItem.mMsg = cursor.getString(cursor.getColumnIndex(LoggDBInfo.COLUMN_LOG_MSG));
         return loggItem;
     }
 

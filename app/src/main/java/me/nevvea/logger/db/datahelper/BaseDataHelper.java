@@ -1,4 +1,4 @@
-package me.nevvea.logger.db;
+package me.nevvea.logger.db.datahelper;
 
 import android.content.ContentValues;
 import android.content.Context;

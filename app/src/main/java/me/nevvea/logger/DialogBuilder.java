@@ -3,13 +3,12 @@ package me.nevvea.logger;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
 import me.nevvea.logger.bean.LoggItem;
-import me.nevvea.logger.db.LoggDataHelper;
+import me.nevvea.logger.db.datahelper.FPLoggDataHelper;
 
 /**
  * Created by Anna on 6/21/16.
@@ -27,8 +26,8 @@ public class DialogBuilder {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         LoggItem loggItem = new LoggItem(logMsg.getText().toString());
-                        LoggDataHelper loggDataHelper = new LoggDataHelper(context);
-                        loggDataHelper.insert(loggItem);
+                        FPLoggDataHelper FPLoggDataHelper = new FPLoggDataHelper(context);
+                        FPLoggDataHelper.insert(loggItem);
                     }
                 })
                 .setNegativeButton("Nevermind", new DialogInterface.OnClickListener() {

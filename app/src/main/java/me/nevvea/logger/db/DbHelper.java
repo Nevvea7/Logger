@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DbHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
 
     static final String DATABASE_NAME = "logger.db";
 
@@ -19,12 +19,15 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        LoggDataHelper.LoggDBInfo.TABLE.create(sqLiteDatabase);
+        LoggDBInfo.TABLE_TITLE.create(sqLiteDatabase);
+        LoggDBInfo.TABLE_ALL.create(sqLiteDatabase);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + LoggDataHelper.LoggDBInfo.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + LoggDBInfo.TABLE_NAME_TITLE);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + LoggDBInfo.TABLE_NAME_ALL);
+
         onCreate(sqLiteDatabase);
     }
 }
