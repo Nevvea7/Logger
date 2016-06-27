@@ -1,4 +1,4 @@
-package me.nevvea.logger;
+package me.nevvea.logger.adapter;
 
 import android.content.Context;
 import android.database.ContentObserver;
@@ -9,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Filter;
 import android.widget.FilterQueryProvider;
 import android.widget.Filterable;
+
+import me.nevvea.logger.CursorFilter;
 
 /**
  * Author:    ZhuWenWu

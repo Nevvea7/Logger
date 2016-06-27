@@ -21,13 +21,13 @@ public class DataProvider extends ContentProvider {
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
-    public static final String PATH_ALL_LOG = "all_log";
+    public static final String PATH_LOG_TITLE = "log_title";
     public static final String PATH_DAILY_LOG = "daily_log";
 
     public static final Uri ALL_LOG_URI =
             BASE_CONTENT_URI
                     .buildUpon()
-                    .appendPath(PATH_ALL_LOG)
+                    .appendPath(PATH_LOG_TITLE)
                     .build();
 
     public static final Uri DAILY_LOG_URI =
@@ -54,7 +54,7 @@ public class DataProvider extends ContentProvider {
         matcher.addURI(authority, PATH_DAILY_LOG, LOG);
         matcher.addURI(authority, PATH_DAILY_LOG + "/*", LOG_WITH_ID);
         matcher.addURI(authority, PATH_DAILY_LOG + "/year/#/month/#/day/#", LOG_WITH_YEAR_MONTH_DAY);
-        matcher.addURI(authority, PATH_ALL_LOG, ALL_LOG);
+        matcher.addURI(authority, PATH_LOG_TITLE, ALL_LOG);
         return matcher;
     }
 
@@ -95,11 +95,11 @@ public class DataProvider extends ContentProvider {
 
         switch (match) {
             case LOG:
-                return LoggDBInfo.CONTENT_ITEM_TYPE;
+                return LoggDBInfo.CONTENT_ITEM_TYPE_ALL_LOG;
             case LOG_WITH_ID:
-                return LoggDBInfo.CONTENT_ITEM_TYPE;
+                return LoggDBInfo.CONTENT_ITEM_TYPE_ALL_LOG;
             case ALL_LOG:
-                return LoggDBInfo.CONTENT_TYPE;
+                return LoggDBInfo.CONTENT_TYPE_LOG_TITLE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }

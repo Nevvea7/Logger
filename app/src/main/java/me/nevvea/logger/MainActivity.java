@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import me.nevvea.logger.db.datahelper.FPLoggDataHelper;
+import me.nevvea.logger.util.DialogBuilder;
 
 public class MainActivity extends AppCompatActivity {
 

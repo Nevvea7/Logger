@@ -1,4 +1,4 @@
-package me.nevvea.logger;
+package me.nevvea.logger.fragment;
 
 import android.database.Cursor;
 import android.support.annotation.Nullable;
@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import me.nevvea.logger.R;
+import me.nevvea.logger.adapter.LoggAdapter;
 import me.nevvea.logger.db.datahelper.FPLoggDataHelper;
 
 /**

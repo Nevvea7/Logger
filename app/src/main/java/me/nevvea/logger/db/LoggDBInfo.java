@@ -25,21 +25,25 @@ public final class LoggDBInfo implements BaseColumns {
     public static final String COLUMN_LOG_SECOND = "log_second";
     public static final String COLUMN_LOG_TIME = "log_time";
     public static final String COLUMN_LOG_MSG = "log_msg";
+    public static final String COLUMN_LOG_ID = "log_id";
 
-    public static final String CONTENT_TYPE =
-            ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + DataProvider.CONTENT_AUTHORITY + "/" + DataProvider.PATH_ALL_LOG;
-    public static final String CONTENT_ITEM_TYPE =
-            ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + DataProvider.CONTENT_AUTHORITY + "/" + DataProvider.PATH_ALL_LOG;
 
+    public static final String CONTENT_TYPE_LOG_TITLE =
+            ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + DataProvider.CONTENT_AUTHORITY + "/" + DataProvider.PATH_LOG_TITLE;
+    public static final String CONTENT_ITEM_TYPE_ALL_LOG =
+            ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + DataProvider.CONTENT_AUTHORITY + "/" + DataProvider.PATH_LOG_TITLE;
+
+    public static final String CONTENT_TYPE_DAILY_LOG =
+            ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + DataProvider.CONTENT_AUTHORITY + "/" + DataProvider.PATH_DAILY_LOG;
+    public static final String CONTENT_ITEM_TYPE_DAILY_LOG =
+            ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + DataProvider.CONTENT_AUTHORITY + "/" + DataProvider.PATH_DAILY_LOG;
 
     public static final SQLiteTable TABLE_TITLE =
             new SQLiteTable(TABLE_NAME_TITLE)
+                    .addColumn(COLUMN_LOG_ID, Column.DataType.INTEGER)
                     .addColumn(COLUMN_LOG_DAY, Column.DataType.INTEGER)
                     .addColumn(COLUMN_LOG_MONTH, Column.DataType.INTEGER)
                     .addColumn(COLUMN_LOG_YEAR, Column.DataType.INTEGER)
-                    .addColumn(COLUMN_LOG_HOUR, Column.DataType.INTEGER)
-                    .addColumn(COLUMN_LOG_MINUTE, Column.DataType.INTEGER)
-                    .addColumn(COLUMN_LOG_SECOND, Column.DataType.INTEGER)
                     .addColumn(COLUMN_LOG_TIME, Column.DataType.INTEGER)
                     .addColumn(COLUMN_LOG_MSG, Column.DataType.TEXT);
 

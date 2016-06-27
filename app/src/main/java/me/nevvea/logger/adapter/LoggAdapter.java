@@ -1,4 +1,4 @@
-package me.nevvea.logger;
+package me.nevvea.logger.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import me.nevvea.logger.R;
 import me.nevvea.logger.bean.LoggItem;
 
 /**
@@ -34,7 +35,7 @@ public class LoggAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerView.V
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new FullLoggViewHolder(mLayoutInflater.inflate(R.layout.item_logg_main_page, parent, false), this);
+        return new FullLoggViewHolder(mLayoutInflater.inflate(R.layout.item_logg_titles, parent, false), this);
     }
 
     public static class FullLoggViewHolder extends RecyclerView.ViewHolder {

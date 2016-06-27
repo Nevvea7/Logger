@@ -1,4 +1,4 @@
-package me.nevvea.logger;
+package me.nevvea.logger.util;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import me.nevvea.logger.R;
 import me.nevvea.logger.bean.LoggItem;
 import me.nevvea.logger.db.datahelper.FPLoggDataHelper;
 
