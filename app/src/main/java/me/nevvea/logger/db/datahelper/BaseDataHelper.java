@@ -55,6 +55,10 @@ public abstract class BaseDataHelper {
         return mContext.getContentResolver().update(getContentUri(), values, where, whereArgs);
     }
 
+    protected final int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        return mContext.getContentResolver().update(uri, values, selection, selectionArgs);
+    }
+
     protected final int delete(String where, String[] selectionArgs) {
         return mContext.getContentResolver().delete(getContentUri(), where, selectionArgs);
     }

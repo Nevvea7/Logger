@@ -1,4 +1,4 @@
-package me.nevvea.logger;
+package me.nevvea.logger.adapter;
 
 import android.database.Cursor;
 import android.widget.Filter;

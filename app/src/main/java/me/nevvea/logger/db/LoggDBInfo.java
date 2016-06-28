@@ -30,7 +30,7 @@ public final class LoggDBInfo implements BaseColumns {
 
     public static final String CONTENT_TYPE_LOG_TITLE =
             ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + DataProvider.CONTENT_AUTHORITY + "/" + DataProvider.PATH_LOG_TITLE;
-    public static final String CONTENT_ITEM_TYPE_ALL_LOG =
+    public static final String CONTENT_ITEM_TYPE_LOG_TITLE =
             ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + DataProvider.CONTENT_AUTHORITY + "/" + DataProvider.PATH_LOG_TITLE;
 
     public static final String CONTENT_TYPE_DAILY_LOG =

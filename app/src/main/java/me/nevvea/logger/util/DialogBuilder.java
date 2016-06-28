@@ -8,7 +8,9 @@ import android.view.View;
 import android.widget.EditText;
 
 import me.nevvea.logger.R;
+import me.nevvea.logger.adapter.DailyLoggAdapter;
 import me.nevvea.logger.bean.LoggItem;
+import me.nevvea.logger.db.datahelper.DailyLoggDataHelper;
 import me.nevvea.logger.db.datahelper.FPLoggDataHelper;
 
 /**
@@ -16,7 +18,7 @@ import me.nevvea.logger.db.datahelper.FPLoggDataHelper;
  */
 public class DialogBuilder {
 
-    public static AlertDialog buildSingleLoggDialog(final Context context) {
+    public static AlertDialog buildSingleLoggDialog(final Context context, final FPLoggDataHelper dataHelper) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View promptView = layoutInflater.inflate(R.layout.dialog_single_logg_main, null);
         final EditText logMsg = (EditText) promptView.findViewById(R.id.dialog_main_logg_edittext);
@@ -27,8 +29,9 @@ public class DialogBuilder {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         LoggItem loggItem = new LoggItem(logMsg.getText().toString());
-                        FPLoggDataHelper FPLoggDataHelper = new FPLoggDataHelper(context);
-                        FPLoggDataHelper.insert(loggItem);
+                        DailyLoggDataHelper dailyLoggDataHelper = new DailyLoggDataHelper(context);
+                        dailyLoggDataHelper.insert(loggItem);
+                        dataHelper.updateTitle(loggItem);
                     }
                 })
                 .setNegativeButton("Nevermind", new DialogInterface.OnClickListener() {

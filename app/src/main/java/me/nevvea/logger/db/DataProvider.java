@@ -24,7 +24,7 @@ public class DataProvider extends ContentProvider {
     public static final String PATH_LOG_TITLE = "log_title";
     public static final String PATH_DAILY_LOG = "daily_log";
 
-    public static final Uri ALL_LOG_URI =
+    public static final Uri TITLE_LOG_URI =
             BASE_CONTENT_URI
                     .buildUpon()
                     .appendPath(PATH_LOG_TITLE)
@@ -44,7 +44,8 @@ public class DataProvider extends ContentProvider {
     static final int LOG = 100;
     static final int LOG_WITH_ID = 101;
     static final int LOG_WITH_YEAR_MONTH_DAY = 102;
-    static final int ALL_LOG = 200;
+    static final int ALL_LOG_TITLE = 200;
+    static final int LOG_TITLE_YEAR_MONTH_DAY = 201;
 
     static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -54,7 +55,8 @@ public class DataProvider extends ContentProvider {
         matcher.addURI(authority, PATH_DAILY_LOG, LOG);
         matcher.addURI(authority, PATH_DAILY_LOG + "/*", LOG_WITH_ID);
         matcher.addURI(authority, PATH_DAILY_LOG + "/year/#/month/#/day/#", LOG_WITH_YEAR_MONTH_DAY);
-        matcher.addURI(authority, PATH_LOG_TITLE, ALL_LOG);
+        matcher.addURI(authority, PATH_LOG_TITLE, ALL_LOG_TITLE);
+        matcher.addURI(authority, PATH_LOG_TITLE + "/year/#/month/#/day/#", LOG_TITLE_YEAR_MONTH_DAY);
         return matcher;
     }
 
@@ -95,11 +97,15 @@ public class DataProvider extends ContentProvider {
 
         switch (match) {
             case LOG:
-                return LoggDBInfo.CONTENT_ITEM_TYPE_ALL_LOG;
+                return LoggDBInfo.CONTENT_TYPE_DAILY_LOG;
             case LOG_WITH_ID:
-                return LoggDBInfo.CONTENT_ITEM_TYPE_ALL_LOG;
-            case ALL_LOG:
+                return LoggDBInfo.CONTENT_ITEM_TYPE_DAILY_LOG;
+            case LOG_WITH_YEAR_MONTH_DAY:
+                return LoggDBInfo.CONTENT_TYPE_DAILY_LOG;
+            case ALL_LOG_TITLE:
                 return LoggDBInfo.CONTENT_TYPE_LOG_TITLE;
+            case LOG_TITLE_YEAR_MONTH_DAY:
+                return LoggDBInfo.CONTENT_ITEM_TYPE_LOG_TITLE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -134,16 +140,39 @@ public class DataProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        int rowsUpdated = 0;
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            rowsUpdated = db.update(matchTable(uri), values, selection, selectionArgs);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
+        }
+        if (rowsUpdated > 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsUpdated;
     }
 
     private String matchTable(Uri uri) {
         String table;
         switch (sUriMatcher.match(uri)) {
             case LOG://Demo列表
+                table = LoggDBInfo.TABLE_NAME_ALL;
+                break;
+            case LOG_WITH_ID:
+                table = LoggDBInfo.TABLE_NAME_ALL;
+                break;
+            case LOG_WITH_YEAR_MONTH_DAY:
+                table = LoggDBInfo.TABLE_NAME_ALL;
+                break;
+            case ALL_LOG_TITLE:
                 table = LoggDBInfo.TABLE_NAME_TITLE;
                 break;
-            case ALL_LOG:
+            case LOG_TITLE_YEAR_MONTH_DAY:
                 table = LoggDBInfo.TABLE_NAME_TITLE;
                 break;
             default:

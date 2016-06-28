@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogBuilder.buildSingleLoggDialog(MainActivity.this).show();
+                DialogBuilder.buildSingleLoggDialog(MainActivity.this, mFPLoggDataHelper).show();
             }
         });
     }

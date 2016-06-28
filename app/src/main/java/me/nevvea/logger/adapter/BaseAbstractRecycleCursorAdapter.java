@@ -10,8 +10,6 @@ import android.widget.Filter;
 import android.widget.FilterQueryProvider;
 import android.widget.Filterable;
 
-import me.nevvea.logger.CursorFilter;
-
 /**
  * Author:    ZhuWenWu
  * Version    V1.0

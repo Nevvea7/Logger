@@ -16,7 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import me.nevvea.logger.R;
-import me.nevvea.logger.adapter.LoggAdapter;
+import me.nevvea.logger.adapter.LoggTitleAdapter;
 import me.nevvea.logger.db.datahelper.FPLoggDataHelper;
 
 /**
@@ -29,7 +29,7 @@ public class MainActivityFragment extends Fragment
     @BindView(R.id.recycler_view_main_frag)
     RecyclerView mRecyclerView;
     private FPLoggDataHelper mFPLoggDataHelper;
-    private LoggAdapter mLoggAdapter;
+    private LoggTitleAdapter mLoggTitleAdapter;
 
     public MainActivityFragment() {
 
@@ -59,8 +59,8 @@ public class MainActivityFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mLoggAdapter = new LoggAdapter(getActivity());
-        mRecyclerView.setAdapter(mLoggAdapter);
+        mLoggTitleAdapter = new LoggTitleAdapter(getActivity());
+        mRecyclerView.setAdapter(mLoggTitleAdapter);
     }
 
     @Override
@@ -79,12 +79,12 @@ public class MainActivityFragment extends Fragment
         if (data == null || data.getCount() == 0) {
 
         } else {
-            mLoggAdapter.changeCursor(data);
+            mLoggTitleAdapter.changeCursor(data);
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mLoggAdapter.changeCursor(null);
+        mLoggTitleAdapter.changeCursor(null);
     }
 }
