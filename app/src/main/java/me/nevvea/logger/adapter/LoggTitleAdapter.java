@@ -1,6 +1,7 @@
 package me.nevvea.logger.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import butterknife.OnClick;
 import me.nevvea.logger.R;
 import me.nevvea.logger.bean.LoggTitle;
 import me.nevvea.logger.util.Utilities;
@@ -20,10 +22,11 @@ import me.nevvea.logger.util.Utilities;
  */
 public class LoggTitleAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerView.ViewHolder> {
     private final LayoutInflater mLayoutInflater;
-
-    public LoggTitleAdapter(Context context) {
+    private OnLoggTitleClickListener mListener;
+    public LoggTitleAdapter(Context context, OnLoggTitleClickListener listener) {
         super(context, null);
         mLayoutInflater = LayoutInflater.from(context);
+        mListener = listener;
     }
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, Cursor cursor) {
@@ -54,5 +57,15 @@ public class LoggTitleAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerV
             ButterKnife.bind(this, itemView);
             mAdapter = adapter;
         }
+
+        @OnClick(R.id.item_logg_summary)
+        void onTitleClick() {
+            LoggTitle title = LoggTitle.fromCursor((Cursor) mAdapter.getItem(getLayoutPosition()));
+            mAdapter.mListener.onTitleClick(title);
+        }
+    }
+
+    public interface OnLoggTitleClickListener {
+        void onTitleClick(LoggTitle loggTitle);
     }
 }

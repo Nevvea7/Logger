@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.support.v4.content.CursorLoader;
 import android.util.Log;
 
+import com.orhanobut.logger.Logger;
+
 import java.util.List;
 
 import me.nevvea.logger.R;
@@ -56,6 +58,9 @@ public class FPLoggDataHelper extends BaseDataHelper implements DBInterface<Logg
     }
 
     public LoggTitle query(int year, int month, int day) {
+        Uri uri = buildUriWithYearMonthDay(year, month, day);
+        Logger.d(uri.getPathSegments());
+        Logger.d(uri.getQueryParameterNames());
         LoggTitle loggTitle = null;
         Cursor cursor = query(
                 buildUriWithYearMonthDay(year, month, day),
@@ -75,6 +80,7 @@ public class FPLoggDataHelper extends BaseDataHelper implements DBInterface<Logg
         LoggTitle newLoggTitle = new LoggTitle(loggItem);
 
         if (prevLoggTitle == null) {
+            Log.d("insert check", "inserting");
             insert(newLoggTitle);
         } else if (prevLoggTitle.loggId != -1) {
             int id = update(
@@ -83,7 +89,6 @@ public class FPLoggDataHelper extends BaseDataHelper implements DBInterface<Logg
                     null,
                     null
             );
-            Log.d("update check", id + "");
         }
     }
 
@@ -113,6 +118,7 @@ public class FPLoggDataHelper extends BaseDataHelper implements DBInterface<Logg
 
     @Override
     public CursorLoader getCursorLoader() {
+        Logger.d("getCursorLoader");
         return new CursorLoader(
                 getContext(),
                 getContentUri(),

@@ -1,5 +1,6 @@
 package me.nevvea.logger;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -10,10 +11,15 @@ import android.view.MenuItem;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import me.nevvea.logger.adapter.LoggTitleAdapter;
+import me.nevvea.logger.bean.LoggTitle;
 import me.nevvea.logger.db.datahelper.FPLoggDataHelper;
+import me.nevvea.logger.fragment.DailyFragment;
+import me.nevvea.logger.fragment.MainActivityFragment;
 import me.nevvea.logger.util.DialogBuilder;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+    implements LoggTitleAdapter.OnLoggTitleClickListener{
 
     Unbinder mUnbinder;
     private FPLoggDataHelper mFPLoggDataHelper;
@@ -27,6 +33,13 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         mFPLoggDataHelper = new FPLoggDataHelper(this);
 
+        if (savedInstanceState == null) {
+            MainActivityFragment fragment = MainActivityFragment.newInstance();
+            fragment.setOnLoggTitleClickListener(this);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container_main_content, fragment)
+                    .commit();
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;
@@ -58,5 +71,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onTitleClick(LoggTitle loggTitle) {
+        Intent intent = new Intent(this, DetailActivity.class);
+        intent.putExtra(LoggTitle.TAG, loggTitle);
+        startActivity(intent);
     }
 }

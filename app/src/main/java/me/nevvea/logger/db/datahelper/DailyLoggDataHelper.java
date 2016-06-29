@@ -2,13 +2,19 @@ package me.nevvea.logger.db.datahelper;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.content.CursorLoader;
 import android.util.Log;
 
+import com.orhanobut.logger.Logger;
+
 import java.util.List;
 
+import me.nevvea.logger.R;
+import me.nevvea.logger.app.LoggerApplication;
 import me.nevvea.logger.bean.LoggItem;
+import me.nevvea.logger.bean.LoggTitle;
 import me.nevvea.logger.db.DBInterface;
 import me.nevvea.logger.db.DataProvider;
 import me.nevvea.logger.db.LoggDBInfo;
@@ -34,6 +40,16 @@ public class DailyLoggDataHelper extends BaseDataHelper implements DBInterface<L
     @Override
     public LoggItem query(String id) {
         return null;
+    }
+
+    public Uri buildUriWithYearMonthDay(int year, int month, int day) {
+        return getContentUri()
+                .buildUpon()
+                .appendEncodedPath(
+                        LoggerApplication
+                                .getContext()
+                                .getString(R.string.uri_year_month_day, year, month, day))
+                .build();
     }
 
     @Override
@@ -69,6 +85,26 @@ public class DailyLoggDataHelper extends BaseDataHelper implements DBInterface<L
 
     @Override
     public CursorLoader getCursorLoader() {
-        return null;
+        Logger.d("getCursorLoader");
+        return new CursorLoader(
+                getContext(),
+                getContentUri(),
+                null,
+                null,
+                null,
+                LoggDBInfo.COLUMN_LOG_TIME + " DESC"
+        );
+    }
+
+    public CursorLoader getCursorLoader(LoggTitle loggTitle) {
+        Logger.d("getCursorLoader");
+        return new CursorLoader(
+                getContext(),
+                buildUriWithYearMonthDay(loggTitle.year, loggTitle.month, loggTitle.day),
+                null,
+                null,
+                null,
+                LoggDBInfo.COLUMN_LOG_TIME + " DESC"
+        );
     }
 }

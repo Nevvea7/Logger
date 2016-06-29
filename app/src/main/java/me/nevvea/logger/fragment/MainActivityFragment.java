@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.orhanobut.logger.Logger;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -30,9 +32,18 @@ public class MainActivityFragment extends Fragment
     RecyclerView mRecyclerView;
     private FPLoggDataHelper mFPLoggDataHelper;
     private LoggTitleAdapter mLoggTitleAdapter;
+    private LoggTitleAdapter.OnLoggTitleClickListener mListener;
 
     public MainActivityFragment() {
 
+    }
+
+    public static MainActivityFragment newInstance() {
+        return new MainActivityFragment();
+    }
+
+    public void setOnLoggTitleClickListener(LoggTitleAdapter.OnLoggTitleClickListener listener) {
+        mListener = listener;
     }
 
     @Override
@@ -59,7 +70,7 @@ public class MainActivityFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mLoggTitleAdapter = new LoggTitleAdapter(getActivity());
+        mLoggTitleAdapter = new LoggTitleAdapter(getActivity(), mListener);
         mRecyclerView.setAdapter(mLoggTitleAdapter);
     }
 
@@ -71,6 +82,7 @@ public class MainActivityFragment extends Fragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Logger.d("onCreateLoader");
         return mFPLoggDataHelper.getCursorLoader();
     }
 

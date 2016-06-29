@@ -8,15 +8,22 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.orhanobut.logger.Logger;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import me.nevvea.logger.R;
+import me.nevvea.logger.adapter.DailyLoggAdapter;
+import me.nevvea.logger.adapter.LoggTitleAdapter;
+import me.nevvea.logger.bean.LoggTitle;
+import me.nevvea.logger.db.datahelper.DailyLoggDataHelper;
 
 
 public class DailyFragment extends Fragment
@@ -26,13 +33,31 @@ public class DailyFragment extends Fragment
     @BindView(R.id.recycler_view_daily_frag)
     RecyclerView mRecyclerView;
 
+    DailyLoggDataHelper mDailyLoggDataHelper;
+    DailyLoggAdapter mDailyLoggAdapter;
+    LoggTitle mTitle;
+
     public DailyFragment() {
 
+    }
+
+    public static DailyFragment newInstance() {
+        Logger.d("newInstance");
+        return new DailyFragment();
+    }
+
+    @Override
+    public void setArguments(Bundle args) {
+        Logger.d("setArguments");
+        super.setArguments(args);
+        mTitle = args.getParcelable(LoggTitle.TAG);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Logger.d("onCreate");
+        mDailyLoggDataHelper = new DailyLoggDataHelper(getActivity());
     }
 
     @Nullable
@@ -44,17 +69,37 @@ public class DailyFragment extends Fragment
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mDailyLoggAdapter = new DailyLoggAdapter(getActivity());
+        mRecyclerView.setAdapter(mDailyLoggAdapter);
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
+        Logger.d("onCreateLoader");
+        return mDailyLoggDataHelper.getCursorLoader(mTitle);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+        Logger.d("onLoadFinished");
+        if (data == null || data.getCount() == 0) {
+            Logger.d("null cursor");
+        } else {
+            mDailyLoggAdapter.changeCursor(data);
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        mDailyLoggAdapter.changeCursor(null);
     }
 }

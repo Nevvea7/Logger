@@ -34,7 +34,7 @@ public class DailyLoggAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerV
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new FullLoggViewHolder(mLayoutInflater.inflate(R.layout.item_logg_titles, parent, false), this);
+        return new FullLoggViewHolder(mLayoutInflater.inflate(R.layout.item_logg_daily, parent, false), this);
     }
 
     public static class FullLoggViewHolder extends RecyclerView.ViewHolder {

@@ -12,6 +12,10 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.orhanobut.logger.Logger;
+
+import me.nevvea.logger.util.Utilities;
+
 /**
  * Created by Anna on 6/13/16.
  */
@@ -36,6 +40,18 @@ public class DataProvider extends ContentProvider {
                     .appendPath(PATH_DAILY_LOG)
                     .build();
 
+    private static final String sTitleYearMonthDaySelection =
+            LoggDBInfo.TABLE_NAME_TITLE + '.' +
+                    LoggDBInfo.COLUMN_LOG_YEAR + " = ? AND " +
+                    LoggDBInfo.COLUMN_LOG_MONTH + " = ? AND " +
+                    LoggDBInfo.COLUMN_LOG_DAY + " = ? ";
+
+    private static final String sLoggYearMonthDaySelection =
+            LoggDBInfo.TABLE_NAME_ALL + '.' +
+                    LoggDBInfo.COLUMN_LOG_YEAR + " = ? AND " +
+                    LoggDBInfo.COLUMN_LOG_MONTH + " = ? AND " +
+                    LoggDBInfo.COLUMN_LOG_DAY + " = ? ";
+
 
     // The URI Matcher used by this content provider.
     private static final UriMatcher sUriMatcher = buildUriMatcher();
@@ -53,10 +69,10 @@ public class DataProvider extends ContentProvider {
 
         // For each type of URI you want to add, create a corresponding code.
         matcher.addURI(authority, PATH_DAILY_LOG, LOG);
-        matcher.addURI(authority, PATH_DAILY_LOG + "/*", LOG_WITH_ID);
-        matcher.addURI(authority, PATH_DAILY_LOG + "/year/#/month/#/day/#", LOG_WITH_YEAR_MONTH_DAY);
         matcher.addURI(authority, PATH_LOG_TITLE, ALL_LOG_TITLE);
         matcher.addURI(authority, PATH_LOG_TITLE + "/year/#/month/#/day/#", LOG_TITLE_YEAR_MONTH_DAY);
+        matcher.addURI(authority, PATH_DAILY_LOG + "/year/#/month/#/day/#", LOG_WITH_YEAR_MONTH_DAY);
+
         return matcher;
     }
 
@@ -73,19 +89,21 @@ public class DataProvider extends ContentProvider {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(matchTable(uri));
 
+        Logger.d(uri);
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
 
         retCursor = queryBuilder.query(
                 db,
                 projection,
-                selection,
-                selectionArgs,
+                matchSelection(uri),
+                matchSelectionArgs(uri),
                 null,
                 null,
                 sortOrder
         );
 
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        Logger.d(retCursor.getCount());
         return retCursor;
     }
 
@@ -159,8 +177,9 @@ public class DataProvider extends ContentProvider {
 
     private String matchTable(Uri uri) {
         String table;
+        Logger.d(sUriMatcher.match(uri));
         switch (sUriMatcher.match(uri)) {
-            case LOG://Demo列表
+            case LOG:
                 table = LoggDBInfo.TABLE_NAME_ALL;
                 break;
             case LOG_WITH_ID:
@@ -176,9 +195,43 @@ public class DataProvider extends ContentProvider {
                 table = LoggDBInfo.TABLE_NAME_TITLE;
                 break;
             default:
-                throw new IllegalArgumentException("Unknown Uri" + uri);
+                throw new IllegalArgumentException("Unknown Uri " + uri);
         }
         return table;
+    }
+
+    private String matchSelection(Uri uri) {
+        switch (sUriMatcher.match(uri)) {
+            case LOG:
+                return null;
+            case LOG_WITH_ID:
+                return null;
+            case LOG_WITH_YEAR_MONTH_DAY:
+                return sLoggYearMonthDaySelection;
+            case ALL_LOG_TITLE:
+                return null;
+            case LOG_TITLE_YEAR_MONTH_DAY:
+                return sTitleYearMonthDaySelection;
+            default:
+                throw new IllegalArgumentException("Unknown Uri" + uri);
+        }
+    }
+
+    private String[] matchSelectionArgs(Uri uri) {
+        switch (sUriMatcher.match(uri)) {
+            case LOG:
+                return null;
+            case LOG_WITH_ID:
+                return null;
+            case LOG_WITH_YEAR_MONTH_DAY:
+                return Utilities.getYearMonthDayFromUri(uri);
+            case ALL_LOG_TITLE:
+                return null;
+            case LOG_TITLE_YEAR_MONTH_DAY:
+                return Utilities.getYearMonthDayFromUri(uri);
+            default:
+                throw new IllegalArgumentException("Unknown Uri" + uri);
+        }
     }
 
 }
