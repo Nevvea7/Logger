@@ -5,7 +5,10 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
+
+import com.orhanobut.logger.Logger;
 
 import me.nevvea.logger.R;
 import me.nevvea.logger.adapter.DailyLoggAdapter;
@@ -22,13 +25,19 @@ public class DialogBuilder {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View promptView = layoutInflater.inflate(R.layout.dialog_single_logg_main, null);
         final EditText logMsg = (EditText) promptView.findViewById(R.id.dialog_main_logg_edittext);
+        final DatePicker datePicker = (DatePicker) promptView.findViewById(R.id.dialog_date_picker);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(promptView)
                 .setCancelable(true)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Log", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        LoggItem loggItem = new LoggItem(logMsg.getText().toString());
+                        LoggItem loggItem = new LoggItem(
+                                datePicker.getDayOfMonth(),
+                                datePicker.getMonth() + 1,
+                                datePicker.getYear(),
+                                logMsg.getText().toString());
+                        Logger.d("month %d, time %d", loggItem.mMonth, loggItem.mTime);
                         DailyLoggDataHelper dailyLoggDataHelper = new DailyLoggDataHelper(context);
                         dailyLoggDataHelper.insert(loggItem);
                         dataHelper.updateTitle(loggItem);

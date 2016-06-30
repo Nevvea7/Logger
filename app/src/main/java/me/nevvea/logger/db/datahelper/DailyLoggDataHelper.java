@@ -92,7 +92,7 @@ public class DailyLoggDataHelper extends BaseDataHelper implements DBInterface<L
                 null,
                 null,
                 null,
-                LoggDBInfo.COLUMN_LOG_TIME + " DESC"
+                LoggDBInfo.COLUMN_LOG_TIME + " ASC"
         );
     }
 
@@ -104,7 +104,7 @@ public class DailyLoggDataHelper extends BaseDataHelper implements DBInterface<L
                 null,
                 null,
                 null,
-                LoggDBInfo.COLUMN_LOG_TIME + " DESC"
+                LoggDBInfo.COLUMN_LOG_TIME + " ASC"
         );
     }
 }

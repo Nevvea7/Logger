@@ -88,8 +88,6 @@ public class DataProvider extends ContentProvider {
         Cursor retCursor;
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(matchTable(uri));
-
-        Logger.d(uri);
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
 
         retCursor = queryBuilder.query(
@@ -103,7 +101,6 @@ public class DataProvider extends ContentProvider {
         );
 
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
-        Logger.d(retCursor.getCount());
         return retCursor;
     }
 
@@ -162,7 +159,7 @@ public class DataProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         db.beginTransaction();
         try {
-            rowsUpdated = db.update(matchTable(uri), values, selection, selectionArgs);
+            rowsUpdated = db.update(matchTable(uri), values, matchSelection(uri), matchSelectionArgs(uri));
             db.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
@@ -177,7 +174,6 @@ public class DataProvider extends ContentProvider {
 
     private String matchTable(Uri uri) {
         String table;
-        Logger.d(sUriMatcher.match(uri));
         switch (sUriMatcher.match(uri)) {
             case LOG:
                 table = LoggDBInfo.TABLE_NAME_ALL;

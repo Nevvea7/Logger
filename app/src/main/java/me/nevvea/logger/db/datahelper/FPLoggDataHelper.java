@@ -59,8 +59,6 @@ public class FPLoggDataHelper extends BaseDataHelper implements DBInterface<Logg
 
     public LoggTitle query(int year, int month, int day) {
         Uri uri = buildUriWithYearMonthDay(year, month, day);
-        Logger.d(uri.getPathSegments());
-        Logger.d(uri.getQueryParameterNames());
         LoggTitle loggTitle = null;
         Cursor cursor = query(
                 buildUriWithYearMonthDay(year, month, day),

@@ -3,6 +3,7 @@ package me.nevvea.logger.app;
 import android.app.Application;
 import android.content.Context;
 
+
 /**
  * Created by Anna on 6/15/16.
  */
