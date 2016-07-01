@@ -22,12 +22,15 @@ import butterknife.Unbinder;
 import me.nevvea.logger.R;
 import me.nevvea.logger.adapter.DailyLoggAdapter;
 import me.nevvea.logger.adapter.LoggTitleAdapter;
+import me.nevvea.logger.bean.LoggItem;
 import me.nevvea.logger.bean.LoggTitle;
 import me.nevvea.logger.db.datahelper.DailyLoggDataHelper;
 
 
 public class DailyFragment extends Fragment
-        implements LoaderManager.LoaderCallbacks<Cursor>{
+        implements LoaderManager.LoaderCallbacks<Cursor>,
+        DailyLoggAdapter.DailyLoggChangeListener
+{
 
     Unbinder mUnbinder;
     @BindView(R.id.recycler_view_daily_frag)
@@ -42,13 +45,11 @@ public class DailyFragment extends Fragment
     }
 
     public static DailyFragment newInstance() {
-        Logger.d("newInstance");
         return new DailyFragment();
     }
 
     @Override
     public void setArguments(Bundle args) {
-        Logger.d("setArguments");
         super.setArguments(args);
         mTitle = args.getParcelable(LoggTitle.TAG);
     }
@@ -56,7 +57,6 @@ public class DailyFragment extends Fragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Logger.d("onCreate");
         mDailyLoggDataHelper = new DailyLoggDataHelper(getActivity());
     }
 
@@ -78,19 +78,17 @@ public class DailyFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mDailyLoggAdapter = new DailyLoggAdapter(getActivity());
+        mDailyLoggAdapter = new DailyLoggAdapter(getActivity(), this);
         mRecyclerView.setAdapter(mDailyLoggAdapter);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Logger.d("onCreateLoader");
         return mDailyLoggDataHelper.getCursorLoader(mTitle);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Logger.d("onLoadFinished");
         if (data == null || data.getCount() == 0) {
             Logger.d("null cursor");
         } else {
@@ -101,5 +99,10 @@ public class DailyFragment extends Fragment
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mDailyLoggAdapter.changeCursor(null);
+    }
+
+    @Override
+    public void onLoggDeleted(LoggItem loggItem) {
+
     }
 }

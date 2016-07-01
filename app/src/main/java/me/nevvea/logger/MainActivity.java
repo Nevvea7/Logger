@@ -1,5 +1,6 @@
 package me.nevvea.logger;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -8,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.DatePicker;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -19,7 +21,8 @@ import me.nevvea.logger.fragment.MainActivityFragment;
 import me.nevvea.logger.util.DialogBuilder;
 
 public class MainActivity extends AppCompatActivity
-    implements LoggTitleAdapter.OnLoggTitleClickListener{
+    implements LoggTitleAdapter.OnLoggTitleClickListener,
+        DatePickerDialog.OnDateSetListener{
 
     Unbinder mUnbinder;
     private FPLoggDataHelper mFPLoggDataHelper;
@@ -33,13 +36,11 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         mFPLoggDataHelper = new FPLoggDataHelper(this);
 
-        if (savedInstanceState == null) {
-            MainActivityFragment fragment = MainActivityFragment.newInstance();
-            fragment.setOnLoggTitleClickListener(this);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container_main_content, fragment)
-                    .commit();
-        }
+        MainActivityFragment fragment = MainActivityFragment.newInstance();
+        fragment.setOnLoggTitleClickListener(this);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container_main_content, fragment)
+                .commit();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;
@@ -78,5 +79,10 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra(LoggTitle.TAG, loggTitle);
         startActivity(intent);
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
     }
 }

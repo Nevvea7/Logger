@@ -18,7 +18,6 @@ public class DetailActivity extends AppCompatActivity {
         DailyFragment fragment = DailyFragment.newInstance();
         Bundle args = new Bundle();
         LoggTitle title = getIntent().getParcelableExtra(LoggTitle.TAG);
-        Logger.d(title == null);
         assert title != null;
         setTitle(title.title);
         args.putParcelable(LoggTitle.TAG, title);

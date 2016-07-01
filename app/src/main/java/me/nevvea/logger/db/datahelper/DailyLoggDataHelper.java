@@ -52,6 +52,13 @@ public class DailyLoggDataHelper extends BaseDataHelper implements DBInterface<L
                 .build();
     }
 
+    public Uri buildUriWithId(int id) {
+        return getContentUri()
+                .buildUpon()
+                .appendPath(Integer.toString(id))
+                .build();
+    }
+
     @Override
     public int clearAll() {
         return 0;
@@ -65,8 +72,11 @@ public class DailyLoggDataHelper extends BaseDataHelper implements DBInterface<L
     @Override
     public void insert(LoggItem data) {
         ContentValues value = getContentValues(data);
-        String s = insert(value).getLastPathSegment();
-        Log.d("id check", s);
+        insert(value);
+    }
+
+    public void delete(LoggItem data) {
+        delete(buildUriWithId(data.mId));
     }
 
     @Override
@@ -85,7 +95,6 @@ public class DailyLoggDataHelper extends BaseDataHelper implements DBInterface<L
 
     @Override
     public CursorLoader getCursorLoader() {
-        Logger.d("getCursorLoader");
         return new CursorLoader(
                 getContext(),
                 getContentUri(),
@@ -97,7 +106,6 @@ public class DailyLoggDataHelper extends BaseDataHelper implements DBInterface<L
     }
 
     public CursorLoader getCursorLoader(LoggTitle loggTitle) {
-        Logger.d("getCursorLoader");
         return new CursorLoader(
                 getContext(),
                 buildUriWithYearMonthDay(loggTitle.year, loggTitle.month, loggTitle.day),

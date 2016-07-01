@@ -63,6 +63,10 @@ public abstract class BaseDataHelper {
         return mContext.getContentResolver().delete(getContentUri(), where, selectionArgs);
     }
 
+    protected final int delete(Uri uri) {
+        return mContext.getContentResolver().delete(uri, null, null);
+    }
+
     public CursorLoader getCursorLoader(Context context) {
         return getCursorLoader(context, null, null, null, null);
     }

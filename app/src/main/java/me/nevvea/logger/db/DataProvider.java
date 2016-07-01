@@ -9,8 +9,10 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.orhanobut.logger.Logger;
 
@@ -46,11 +48,20 @@ public class DataProvider extends ContentProvider {
                     LoggDBInfo.COLUMN_LOG_MONTH + " = ? AND " +
                     LoggDBInfo.COLUMN_LOG_DAY + " = ? ";
 
+    private static final String sTitleIdSelection =
+            LoggDBInfo.TABLE_TITLE + "." +
+                    BaseColumns._ID + " = ? ";
+
     private static final String sLoggYearMonthDaySelection =
             LoggDBInfo.TABLE_NAME_ALL + '.' +
                     LoggDBInfo.COLUMN_LOG_YEAR + " = ? AND " +
                     LoggDBInfo.COLUMN_LOG_MONTH + " = ? AND " +
                     LoggDBInfo.COLUMN_LOG_DAY + " = ? ";
+
+    private static final String sLoggIdSelection =
+            LoggDBInfo.TABLE_NAME_ALL + "." +
+                    BaseColumns._ID + " = ? ";
+
 
 
     // The URI Matcher used by this content provider.
@@ -62,6 +73,7 @@ public class DataProvider extends ContentProvider {
     static final int LOG_WITH_YEAR_MONTH_DAY = 102;
     static final int ALL_LOG_TITLE = 200;
     static final int LOG_TITLE_YEAR_MONTH_DAY = 201;
+    static final int LOG_TITLE_WITH_ID = 202;
 
     static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -69,9 +81,11 @@ public class DataProvider extends ContentProvider {
 
         // For each type of URI you want to add, create a corresponding code.
         matcher.addURI(authority, PATH_DAILY_LOG, LOG);
+        matcher.addURI(authority, PATH_DAILY_LOG + "/id/*", LOG_WITH_ID);
+        matcher.addURI(authority, PATH_DAILY_LOG + "/year/#/month/#/day/#", LOG_WITH_YEAR_MONTH_DAY);
         matcher.addURI(authority, PATH_LOG_TITLE, ALL_LOG_TITLE);
         matcher.addURI(authority, PATH_LOG_TITLE + "/year/#/month/#/day/#", LOG_TITLE_YEAR_MONTH_DAY);
-        matcher.addURI(authority, PATH_DAILY_LOG + "/year/#/month/#/day/#", LOG_WITH_YEAR_MONTH_DAY);
+        matcher.addURI(authority, PATH_LOG_TITLE + "/id/*", LOG_TITLE_WITH_ID);
 
         return matcher;
     }
@@ -119,6 +133,8 @@ public class DataProvider extends ContentProvider {
                 return LoggDBInfo.CONTENT_TYPE_DAILY_LOG;
             case ALL_LOG_TITLE:
                 return LoggDBInfo.CONTENT_TYPE_LOG_TITLE;
+            case LOG_TITLE_WITH_ID:
+                return LoggDBInfo.CONTENT_ITEM_TYPE_LOG_TITLE;
             case LOG_TITLE_YEAR_MONTH_DAY:
                 return LoggDBInfo.CONTENT_ITEM_TYPE_LOG_TITLE;
             default:
@@ -150,7 +166,21 @@ public class DataProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        int rowsDeleted = 0;
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            rowsDeleted = db.delete(
+                    matchTable(uri),
+                    matchSelection(uri),
+                    matchSelectionArgs(uri)
+            );
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return rowsDeleted;
     }
 
     @Override
@@ -158,8 +188,14 @@ public class DataProvider extends ContentProvider {
         int rowsUpdated = 0;
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         db.beginTransaction();
+        Logger.d(uri);
+        Logger.d(values);
         try {
-            rowsUpdated = db.update(matchTable(uri), values, matchSelection(uri), matchSelectionArgs(uri));
+            rowsUpdated = db.update(
+                    matchTable(uri),
+                    values,
+                    matchSelection(uri),
+                    matchSelectionArgs(uri));
             db.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
@@ -173,27 +209,22 @@ public class DataProvider extends ContentProvider {
     }
 
     private String matchTable(Uri uri) {
-        String table;
         switch (sUriMatcher.match(uri)) {
             case LOG:
-                table = LoggDBInfo.TABLE_NAME_ALL;
-                break;
+                return LoggDBInfo.TABLE_NAME_ALL;
             case LOG_WITH_ID:
-                table = LoggDBInfo.TABLE_NAME_ALL;
-                break;
+                return LoggDBInfo.TABLE_NAME_ALL;
             case LOG_WITH_YEAR_MONTH_DAY:
-                table = LoggDBInfo.TABLE_NAME_ALL;
-                break;
+                return LoggDBInfo.TABLE_NAME_ALL;
             case ALL_LOG_TITLE:
-                table = LoggDBInfo.TABLE_NAME_TITLE;
-                break;
+                return LoggDBInfo.TABLE_NAME_TITLE;
+            case LOG_TITLE_WITH_ID:
+                return LoggDBInfo.TABLE_NAME_TITLE;
             case LOG_TITLE_YEAR_MONTH_DAY:
-                table = LoggDBInfo.TABLE_NAME_TITLE;
-                break;
+                return LoggDBInfo.TABLE_NAME_TITLE;
             default:
                 throw new IllegalArgumentException("Unknown Uri " + uri);
         }
-        return table;
     }
 
     private String matchSelection(Uri uri) {
@@ -201,11 +232,13 @@ public class DataProvider extends ContentProvider {
             case LOG:
                 return null;
             case LOG_WITH_ID:
-                return null;
+                return sLoggIdSelection;
             case LOG_WITH_YEAR_MONTH_DAY:
                 return sLoggYearMonthDaySelection;
             case ALL_LOG_TITLE:
                 return null;
+            case LOG_TITLE_WITH_ID:
+                return sTitleIdSelection;
             case LOG_TITLE_YEAR_MONTH_DAY:
                 return sTitleYearMonthDaySelection;
             default:
@@ -218,11 +251,13 @@ public class DataProvider extends ContentProvider {
             case LOG:
                 return null;
             case LOG_WITH_ID:
-                return null;
+                return Utilities.getIdFromUri(uri);
             case LOG_WITH_YEAR_MONTH_DAY:
                 return Utilities.getYearMonthDayFromUri(uri);
             case ALL_LOG_TITLE:
                 return null;
+            case LOG_TITLE_WITH_ID:
+                return Utilities.getIdFromUri(uri);
             case LOG_TITLE_YEAR_MONTH_DAY:
                 return Utilities.getYearMonthDayFromUri(uri);
             default:

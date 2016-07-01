@@ -11,19 +11,23 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.nevvea.logger.R;
+import me.nevvea.logger.adapter.actionhelpers.ItemActionHelper;
 import me.nevvea.logger.bean.LoggItem;
 import me.nevvea.logger.db.datahelper.DailyLoggDataHelper;
 
 /**
  * Created by Anna on 6/27/16.
  */
-public class DailyLoggAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerView.ViewHolder> {
+public class DailyLoggAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerView.ViewHolder>
+    implements ItemActionHelper {
 
     private final LayoutInflater mLayoutInflater;
+    private final DailyLoggChangeListener mListener;
 
-    public DailyLoggAdapter(Context context) {
+    public DailyLoggAdapter(Context context, DailyLoggChangeListener listener) {
         super(context, null);
         mLayoutInflater = LayoutInflater.from(context);
+        mListener = listener;
     }
 
     @Override
@@ -35,6 +39,11 @@ public class DailyLoggAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerV
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new FullLoggViewHolder(mLayoutInflater.inflate(R.layout.item_logg_daily, parent, false), this);
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        mListener.onLoggDeleted((LoggItem) getItem(position));
     }
 
     public static class FullLoggViewHolder extends RecyclerView.ViewHolder {
@@ -49,5 +58,9 @@ public class DailyLoggAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerV
             ButterKnife.bind(this, itemView);
             mAdapter = adapter;
         }
+    }
+
+    public interface DailyLoggChangeListener {
+        void onLoggDeleted(LoggItem loggItem);
     }
 }

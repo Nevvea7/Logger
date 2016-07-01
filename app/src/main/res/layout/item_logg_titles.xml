@@ -2,33 +2,43 @@
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:id="@+id/item_title_card">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:minHeight="@dimen/logg_title_min_height"
+        android:padding="@dimen/logg_title_card_padding"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginRight="@dimen/logg_title_card_padding"
+            android:layout_marginEnd="@dimen/logg_title_card_padding"
+            android:gravity="center_vertical|center_horizontal">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/item_logg_month"
-                android:text="May"/>
+                android:textAppearance="@style/TitleMonthStyle"
+                android:id="@+id/item_logg_month" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/item_logg_day"
-                style="@style/MainPageDayStyle"
-                android:text="29" />
+                android:textAppearance="@style/MainPageDayStyle" />
         </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/item_logg_summary"
-            android:text="blablabla"/>
+            android:textAppearance="@style/LoggTitleStyle"
+            android:gravity="center_vertical" />
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

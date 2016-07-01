@@ -58,7 +58,6 @@ public class FPLoggDataHelper extends BaseDataHelper implements DBInterface<Logg
     }
 
     public LoggTitle query(int year, int month, int day) {
-        Uri uri = buildUriWithYearMonthDay(year, month, day);
         LoggTitle loggTitle = null;
         Cursor cursor = query(
                 buildUriWithYearMonthDay(year, month, day),
@@ -90,6 +89,17 @@ public class FPLoggDataHelper extends BaseDataHelper implements DBInterface<Logg
         }
     }
 
+    public void update(String newTitle, LoggTitle oldTitle) {
+        oldTitle.title = newTitle;
+        LoggTitle newT = new LoggTitle(oldTitle, newTitle);
+        update(
+                buildUriWithYearMonthDay(newT.year, newT.month, newT.day),
+                getContentValues(newT),
+                null,
+                null
+                );
+    }
+
     @Override
     public void bulkInsert(List<LoggTitle> listData) {
 
@@ -98,8 +108,7 @@ public class FPLoggDataHelper extends BaseDataHelper implements DBInterface<Logg
     @Override
     public void insert(LoggTitle data) {
         ContentValues value = getContentValues(data);
-        String s = insert(value).getLastPathSegment();
-        Log.d("id check", s);
+        insert(value);
     }
 
     @Override
@@ -110,6 +119,7 @@ public class FPLoggDataHelper extends BaseDataHelper implements DBInterface<Logg
         values.put(LoggDBInfo.COLUMN_LOG_YEAR, data.year);
         values.put(LoggDBInfo.COLUMN_LOG_TIME, data.time);
         values.put(LoggDBInfo.COLUMN_LOG_MSG, data.title);
+        Logger.d(data.title);
         values.put(LoggDBInfo.COLUMN_LOG_ID, data.loggId);
         return values;
     }
