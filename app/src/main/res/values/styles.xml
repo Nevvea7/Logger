@@ -47,4 +47,9 @@
         <item name="android:textAllCaps">true</item>
     </style>
 
+    <style name="MiddleCardView" parent="CardView.Light">
+        <!--<item name="cardElevation">0dp</item>-->
+        <item name="cardCornerRadius">0dp</item>
+    </style>
+
 </resources>

@@ -21,8 +21,7 @@ import me.nevvea.logger.fragment.MainActivityFragment;
 import me.nevvea.logger.util.DialogBuilder;
 
 public class MainActivity extends AppCompatActivity
-    implements LoggTitleAdapter.OnLoggTitleClickListener,
-        DatePickerDialog.OnDateSetListener{
+    implements LoggTitleAdapter.OnLoggTitleClickListener{
 
     Unbinder mUnbinder;
     private FPLoggDataHelper mFPLoggDataHelper;
@@ -81,8 +80,4 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    @Override
-    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
-    }
 }

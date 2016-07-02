@@ -61,10 +61,20 @@ public class DialogBuilder {
                 .setPositiveButton("Log", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        int day, month, year;
+                        if (datePicker == null) {
+                            day = c.get(Calendar.DAY_OF_MONTH);
+                            month = c.get(Calendar.MONTH) + 1;
+                            year = c.get(Calendar.YEAR);
+                        } else {
+                            day = datePicker.getDayOfMonth();
+                            month = datePicker.getMonth() + 1;
+                            year = datePicker.getYear();
+                        }
                         LoggItem loggItem = new LoggItem(
-                                c.get(Calendar.DAY_OF_MONTH),
-                                c.get(Calendar.MONTH) + 1,
-                                c.get(Calendar.YEAR),
+                                day,
+                                month,
+                                year,
                                 logMsg.getText().toString());
                         DailyLoggDataHelper dailyLoggDataHelper = new DailyLoggDataHelper(context);
                         dailyLoggDataHelper.insert(loggItem);

@@ -58,6 +58,11 @@ public class DataProvider extends ContentProvider {
                     LoggDBInfo.COLUMN_LOG_MONTH + " = ? AND " +
                     LoggDBInfo.COLUMN_LOG_DAY + " = ? ";
 
+    private static final String sLoggMonthDaySelection =
+            LoggDBInfo.TABLE_NAME_ALL + '.' +
+                    LoggDBInfo.COLUMN_LOG_MONTH + " = ? AND " +
+                    LoggDBInfo.COLUMN_LOG_DAY + " = ? ";
+
     private static final String sLoggIdSelection =
             LoggDBInfo.TABLE_NAME_ALL + "." +
                     BaseColumns._ID + " = ? ";
@@ -71,6 +76,7 @@ public class DataProvider extends ContentProvider {
     static final int LOG = 100;
     static final int LOG_WITH_ID = 101;
     static final int LOG_WITH_YEAR_MONTH_DAY = 102;
+    static final int LOG_WITH_MONTH_DAY = 103;
     static final int ALL_LOG_TITLE = 200;
     static final int LOG_TITLE_YEAR_MONTH_DAY = 201;
     static final int LOG_TITLE_WITH_ID = 202;
@@ -82,6 +88,7 @@ public class DataProvider extends ContentProvider {
         // For each type of URI you want to add, create a corresponding code.
         matcher.addURI(authority, PATH_DAILY_LOG, LOG);
         matcher.addURI(authority, PATH_DAILY_LOG + "/id/*", LOG_WITH_ID);
+        matcher.addURI(authority, PATH_DAILY_LOG +  "/month/#/day/#", LOG_WITH_MONTH_DAY);
         matcher.addURI(authority, PATH_DAILY_LOG + "/year/#/month/#/day/#", LOG_WITH_YEAR_MONTH_DAY);
         matcher.addURI(authority, PATH_LOG_TITLE, ALL_LOG_TITLE);
         matcher.addURI(authority, PATH_LOG_TITLE + "/year/#/month/#/day/#", LOG_TITLE_YEAR_MONTH_DAY);
@@ -129,6 +136,8 @@ public class DataProvider extends ContentProvider {
                 return LoggDBInfo.CONTENT_TYPE_DAILY_LOG;
             case LOG_WITH_ID:
                 return LoggDBInfo.CONTENT_ITEM_TYPE_DAILY_LOG;
+            case LOG_WITH_MONTH_DAY:
+                return LoggDBInfo.CONTENT_TYPE_DAILY_LOG;
             case LOG_WITH_YEAR_MONTH_DAY:
                 return LoggDBInfo.CONTENT_TYPE_DAILY_LOG;
             case ALL_LOG_TITLE:
@@ -214,6 +223,8 @@ public class DataProvider extends ContentProvider {
                 return LoggDBInfo.TABLE_NAME_ALL;
             case LOG_WITH_ID:
                 return LoggDBInfo.TABLE_NAME_ALL;
+            case LOG_WITH_MONTH_DAY:
+                return LoggDBInfo.TABLE_NAME_ALL;
             case LOG_WITH_YEAR_MONTH_DAY:
                 return LoggDBInfo.TABLE_NAME_ALL;
             case ALL_LOG_TITLE:
@@ -233,6 +244,8 @@ public class DataProvider extends ContentProvider {
                 return null;
             case LOG_WITH_ID:
                 return sLoggIdSelection;
+            case LOG_WITH_MONTH_DAY:
+                return sLoggMonthDaySelection;
             case LOG_WITH_YEAR_MONTH_DAY:
                 return sLoggYearMonthDaySelection;
             case ALL_LOG_TITLE:
@@ -252,6 +265,8 @@ public class DataProvider extends ContentProvider {
                 return null;
             case LOG_WITH_ID:
                 return Utilities.getIdFromUri(uri);
+            case LOG_WITH_MONTH_DAY:
+                return Utilities.getMonthDayfromUri(uri);
             case LOG_WITH_YEAR_MONTH_DAY:
                 return Utilities.getYearMonthDayFromUri(uri);
             case ALL_LOG_TITLE:

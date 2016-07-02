@@ -52,6 +52,16 @@ public class DailyLoggDataHelper extends BaseDataHelper implements DBInterface<L
                 .build();
     }
 
+    public Uri buildUriWithMonthDay(int month, int day) {
+        return getContentUri()
+                .buildUpon()
+                .appendEncodedPath(
+                        LoggerApplication
+                                .getContext()
+                                .getString(R.string.uri_month_day, month, day))
+                .build();
+    }
+
     public Uri buildUriWithId(int id) {
         return getContentUri()
                 .buildUpon()
@@ -108,11 +118,11 @@ public class DailyLoggDataHelper extends BaseDataHelper implements DBInterface<L
     public CursorLoader getCursorLoader(LoggTitle loggTitle) {
         return new CursorLoader(
                 getContext(),
-                buildUriWithYearMonthDay(loggTitle.year, loggTitle.month, loggTitle.day),
+                buildUriWithMonthDay(loggTitle.month, loggTitle.day),
                 null,
                 null,
                 null,
-                LoggDBInfo.COLUMN_LOG_TIME + " ASC"
+                LoggDBInfo.COLUMN_LOG_YEAR + " DESC, " + LoggDBInfo.COLUMN_LOG_TIME + " ASC"
         );
     }
 }

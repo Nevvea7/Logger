@@ -10,6 +10,8 @@ import android.widget.Filter;
 import android.widget.FilterQueryProvider;
 import android.widget.Filterable;
 
+import com.orhanobut.logger.Logger;
+
 /**
  * Author:    ZhuWenWu
  * Version    V1.0

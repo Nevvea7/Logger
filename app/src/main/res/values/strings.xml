@@ -2,7 +2,8 @@
     <string name="app_name">Logger</string>
     <string name="action_settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="uri_year_month_day">year/%1$d/month/%2$d/day/%3$d</string>
+    <string name="uri_month_day">month/%1$d/day/%2$d</string>
+
 </resources>

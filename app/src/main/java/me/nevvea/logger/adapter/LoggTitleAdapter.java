@@ -2,14 +2,17 @@ package me.nevvea.logger.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,6 +20,7 @@ import butterknife.OnClick;
 import butterknife.OnLongClick;
 import me.nevvea.logger.R;
 import me.nevvea.logger.bean.LoggTitle;
+import me.nevvea.logger.db.LoggDBInfo;
 import me.nevvea.logger.util.DialogBuilder;
 import me.nevvea.logger.util.Utilities;
 
@@ -36,13 +40,20 @@ public class LoggTitleAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerV
         mContext = context;
     }
 
+
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, Cursor cursor) {
         LoggTitle loggItem = LoggTitle.fromCursor(cursor);
         ((LoggTitleViewHolder) holder).mTVLoggMonth.setText(Utilities.getMonth(loggItem.month));
-        ((LoggTitleViewHolder) holder).mTVLoggDay.setText(loggItem.day + "");
+        ((LoggTitleViewHolder) holder).mTVLoggDay.setText(Integer.toString(loggItem.day));
         ((LoggTitleViewHolder) holder).mTVLoggSum.setText(loggItem.title);
 
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+
+        return super.getItemViewType(position);
     }
 
     @Override
@@ -58,7 +69,7 @@ public class LoggTitleAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerV
         @BindView(R.id.item_logg_summary)
         TextView mTVLoggSum;
         @BindView(R.id.item_title_card)
-        CardView mCardTitle;
+        LinearLayout mCardTitle;
 
         LoggTitleAdapter mAdapter;
 
