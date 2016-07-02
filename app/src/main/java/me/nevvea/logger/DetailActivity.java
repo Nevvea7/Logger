@@ -23,7 +23,6 @@ public class DetailActivity extends AppCompatActivity {
         args.putParcelable(LoggTitle.TAG, title);
 
         if (savedInstanceState == null) {
-            Logger.d("beginTransaction");
             fragment.setArguments(args);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.daily_logg_container, fragment)

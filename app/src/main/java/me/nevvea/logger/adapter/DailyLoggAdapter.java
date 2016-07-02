@@ -24,7 +24,7 @@ import me.nevvea.logger.db.datahelper.DailyLoggDataHelper;
  * Created by Anna on 6/27/16.
  */
 public class DailyLoggAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerView.ViewHolder>
-    implements ItemActionHelper {
+ {
 
     public enum ItemType {
         YEAR,
@@ -32,12 +32,10 @@ public class DailyLoggAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerV
     }
 
     private final LayoutInflater mLayoutInflater;
-    private final DailyLoggChangeListener mListener;
 
-    public DailyLoggAdapter(Context context, DailyLoggChangeListener listener) {
+    public DailyLoggAdapter(Context context) {
         super(context, null);
         mLayoutInflater = LayoutInflater.from(context);
-        mListener = listener;
     }
 
     @Override
@@ -88,10 +86,6 @@ public class DailyLoggAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerV
         return ItemType.LOGG.ordinal();
     }
 
-    @Override
-    public void onItemDismiss(int position) {
-        mListener.onLoggDeleted((LoggItem) getItem(position));
-    }
 
     public static class FullLoggViewHolder extends RecyclerView.ViewHolder {
 
@@ -127,7 +121,4 @@ public class DailyLoggAdapter extends BaseAbstractRecycleCursorAdapter<RecyclerV
         }
     }
 
-    public interface DailyLoggChangeListener {
-        void onLoggDeleted(LoggItem loggItem);
-    }
 }

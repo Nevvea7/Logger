@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.BaseColumns;
+import android.provider.ContactsContract;
 import android.support.v4.content.CursorLoader;
 import android.util.Log;
 
@@ -18,6 +20,7 @@ import me.nevvea.logger.bean.LoggTitle;
 import me.nevvea.logger.db.DBInterface;
 import me.nevvea.logger.db.DataProvider;
 import me.nevvea.logger.db.LoggDBInfo;
+import me.nevvea.logger.util.Utilities;
 
 /**
  * Created by Anna on 6/23/16.
@@ -27,6 +30,11 @@ public class DailyLoggDataHelper extends BaseDataHelper implements DBInterface<L
     public DailyLoggDataHelper(Context context) {
         super(context);
     }
+
+    private static final String sLoggIdSelection =
+            LoggDBInfo.TABLE_NAME_ALL + "." +
+                    BaseColumns._ID + " = ? ";
+
     @Override
     protected Uri getContentUri() {
         return DataProvider.DAILY_LOG_URI;
@@ -86,7 +94,7 @@ public class DailyLoggDataHelper extends BaseDataHelper implements DBInterface<L
     }
 
     public void delete(LoggItem data) {
-        delete(buildUriWithId(data.mId));
+        delete(getContentUri(), sLoggIdSelection, new String[]{Integer.toString(data.mId)});
     }
 
     @Override
@@ -122,7 +130,7 @@ public class DailyLoggDataHelper extends BaseDataHelper implements DBInterface<L
                 null,
                 null,
                 null,
-                LoggDBInfo.COLUMN_LOG_YEAR + " DESC, " + LoggDBInfo.COLUMN_LOG_TIME + " ASC"
+                LoggDBInfo.COLUMN_LOG_YEAR + " DESC, " + BaseColumns._ID + " ASC"
         );
     }
 }

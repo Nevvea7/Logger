@@ -328,7 +328,7 @@ public abstract class BaseAbstractRecycleCursorAdapter<VH extends RecyclerView.V
      * @see android.database.ContentObserver#onChange(boolean)
      */
     protected void onContentChanged() {
-
+        Logger.d("content changed!!");
     }
 
     private class ChangeObserver extends ContentObserver {
@@ -350,6 +350,7 @@ public abstract class BaseAbstractRecycleCursorAdapter<VH extends RecyclerView.V
     private class MyDataSetObserver extends DataSetObserver {
         @Override
         public void onChanged() {
+            Logger.d("data changed!!");
             mDataValid = true;
             notifyDataSetChanged();
         }

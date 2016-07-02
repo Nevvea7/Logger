@@ -87,12 +87,12 @@ public class DataProvider extends ContentProvider {
 
         // For each type of URI you want to add, create a corresponding code.
         matcher.addURI(authority, PATH_DAILY_LOG, LOG);
-        matcher.addURI(authority, PATH_DAILY_LOG + "/id/*", LOG_WITH_ID);
         matcher.addURI(authority, PATH_DAILY_LOG +  "/month/#/day/#", LOG_WITH_MONTH_DAY);
         matcher.addURI(authority, PATH_DAILY_LOG + "/year/#/month/#/day/#", LOG_WITH_YEAR_MONTH_DAY);
+        matcher.addURI(authority, PATH_DAILY_LOG + "/*", LOG_WITH_ID);
         matcher.addURI(authority, PATH_LOG_TITLE, ALL_LOG_TITLE);
         matcher.addURI(authority, PATH_LOG_TITLE + "/year/#/month/#/day/#", LOG_TITLE_YEAR_MONTH_DAY);
-        matcher.addURI(authority, PATH_LOG_TITLE + "/id/*", LOG_TITLE_WITH_ID);
+        matcher.addURI(authority, PATH_LOG_TITLE + "/*", LOG_TITLE_WITH_ID);
 
         return matcher;
     }
@@ -181,14 +181,20 @@ public class DataProvider extends ContentProvider {
         try {
             rowsDeleted = db.delete(
                     matchTable(uri),
-                    matchSelection(uri),
-                    matchSelectionArgs(uri)
+                    selection,
+                    selectionArgs
             );
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+
+        if (rowsDeleted > 0) {
+            Logger.d("row deleted!");
+            getContext().getContentResolver().notifyChange(uri, null);
+        } else {
+            Logger.d("didnt delete!");
+        }
         return rowsDeleted;
     }
 
@@ -197,8 +203,6 @@ public class DataProvider extends ContentProvider {
         int rowsUpdated = 0;
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         db.beginTransaction();
-        Logger.d(uri);
-        Logger.d(values);
         try {
             rowsUpdated = db.update(
                     matchTable(uri),
